@@ -3,7 +3,7 @@ import os
 import string
 import pickle
 
-def run(filename, drive):
+def run(filename, drive, verbosity):
 	fileBytes = []
 	try:
 		with open(filename, "rb") as f:
@@ -13,6 +13,9 @@ def run(filename, drive):
 		    	fileBytes.append(b)
 	except FileNotFoundError:
 		return "FileNotFoundError - missingfile"
+
+	if verbosity == 1:
+		print("read file bytes")
 
 	lockedBytes = [None] * round(len(bytesRead) + (len(bytesRead) * random.uniform(1, 4)))
 	bytesKey = {}
@@ -28,11 +31,18 @@ def run(filename, drive):
 				bytesKey[bKeyIndex] = index
 				lockedBytes[index] = b
 				bKeyIndex += 1
+
+	if verbosity == 1:
+		print("scrambled file bytes")
+
 	for i in range(len(lockedBytes)):
 		if lockedBytes[i] == None:
 			lockedBytes[i] = random.randint(1, 255)
 		else:
 			pass
+
+	if verbosity == 1:
+		print("added random data")
 
 	filenameNoEx = (os.path.splitext(filename))[0]
 	filenameEx = (os.path.splitext(filename))[1]
@@ -42,6 +52,8 @@ def run(filename, drive):
 	lockedFile.write(bytes(lockedBytes))
 	lockedFile.close()
 
+	if verbosity == 1:
+		print("wrote locked file")
 
 	letters = string.ascii_lowercase
 	keyFileName = "".join(random.sample(letters,16))
@@ -55,6 +67,9 @@ def run(filename, drive):
 	keyFile = open(keyFileName + ".dkey", "wb")
 	pickle.dump(bytesKey, keyFile)
 	keyFile.close()
+
+	if verbosity == 1:
+		print("wrote key file")
 
 	try:
 		manifestFile = open("manifest.txt", "rb")
@@ -71,5 +86,8 @@ def run(filename, drive):
 	manifestFile = open("manifest.txt", "wb")
 	pickle.dump(data, manifestFile)
 	manifestFile.close()
+
+	if verbosity == 1:
+		print("updated manifest")
 
 	return "OK"

@@ -3,7 +3,7 @@ import os
 import string
 import pickle
 
-def run(filename, drive):
+def run(filename, drive, verbosity):
 	cwd = os.getcwd()
 	try:
 		os.chdir(drive + ":\\deadbolt\\" )
@@ -17,6 +17,9 @@ def run(filename, drive):
 	data = pickle.load(manifestFile)
 	manifestFile.close()
 
+	if verbosity == 1:
+		print("read manifest")
+
 	filenameNoEx = (os.path.splitext(filename))[0]
 
 	keyFileName = data[filenameNoEx][0]
@@ -27,6 +30,9 @@ def run(filename, drive):
 		return "FileNotFoundError - nokeyfile"
 	bytesKey = pickle.load(keyFile)
 	keyFile.close()
+
+	if verbosity == 1:
+		print("read key file")
 
 	os.chdir(cwd)
 
@@ -39,9 +45,15 @@ def run(filename, drive):
 	except FileNotFoundError:
 		return "FileNotFoundError - missingfile"
 
+	if verbosity == 1:
+		print("read locked bytes")
+
 	unlockedBytes = []
 	for key in bytesKey:
 		unlockedBytes.append(lockedBytes[bytesKey[key]])
+
+	if verbosity == 1:
+		print("decoded locked file")
 
 	unlockedBytesToWrite = bytes(unlockedBytes)
 	try:
