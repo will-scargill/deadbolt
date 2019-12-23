@@ -4,9 +4,9 @@ from modules import locker
 from modules import unlocker
 from modules import reader
 
-parser = argparse.ArgumentParser(description="lock your files")
-operationType = parser.add_mutually_exclusive_group()
-volumeType = parser.add_mutually_exclusive_group()
+parser = argparse.ArgumentParser(description="secure your files")
+operationType = parser.add_mutually_exclusive_group() # user shouldnt be able to run multiple different operations at once
+volumeType = parser.add_mutually_exclusive_group() # cant be quiet and verbose at the same time
 
 
 operationType.add_argument("-l", "--lock", help="lock the file", action="store_true")
@@ -14,7 +14,7 @@ operationType.add_argument("-u", "--unlock", help="unlock the file", action="sto
 operationType.add_argument("-r", "--read", help="read the file", action="store_true")
 volumeType.add_argument("-q", "--quiet", help="decrease output verbosity", action="count", default=0)
 volumeType.add_argument("-v", "--verbose", help="increase output verbosity", action="count", default=0)
-parser.add_argument("file", help="file to use")
+parser.add_argument("file", help="file to be locked/unlocked")
 parser.add_argument("drive", help="drive number to read/save the key file to/from")
 
 

@@ -8,7 +8,7 @@ def run(filename, drive, verbosity):
 	try:
 		with open(filename, "rb") as f:
 		    bytesRead = f.read()
-		    for b in bytesRead:
+		    for b in bytesRead: # iterate through the individual bytes and put them in a list
 		    	#print(b)
 		    	fileBytes.append(b)
 	except FileNotFoundError:
@@ -17,35 +17,35 @@ def run(filename, drive, verbosity):
 	if verbosity == 1:
 		print("read file bytes")
 
-	lockedBytes = [None] * round(len(bytesRead) + (len(bytesRead) * random.uniform(1, 4)))
+	lockedBytes = [None] * round(len(bytesRead) + (len(bytesRead) * random.uniform(2, 5))) # generate an empty list of random length
 	bytesKey = {}
 	bKeyIndex = 0
 	for b in bytesRead:
 		unique = False
 		while unique == False:
 			index = random.randint(0, (len(lockedBytes) - 1))
-			if lockedBytes[index] != None:
+			if lockedBytes[index] != None: # if the random index already has something in it that isnt None
 				pass
 			else:
-				unique = True
-				bytesKey[bKeyIndex] = index
-				lockedBytes[index] = b
+				unique = True # exit the while
+				bytesKey[bKeyIndex] = index # set the position in the Key
+				lockedBytes[index] = b # assign the byte to the lockedBytes list at the given index
 				bKeyIndex += 1
 
 	if verbosity == 1:
 		print("scrambled file bytes")
 
 	for i in range(len(lockedBytes)):
-		if lockedBytes[i] == None:
-			lockedBytes[i] = random.randint(1, 255)
+		if lockedBytes[i] == None: # If the index is None
+			lockedBytes[i] = random.randint(1, 255) # generate random data to fill it
 		else:
 			pass
 
 	if verbosity == 1:
 		print("added random data")
 
-	filenameNoEx = (os.path.splitext(filename))[0]
-	filenameEx = (os.path.splitext(filename))[1]
+	filenameNoEx = (os.path.splitext(filename))[0] # Get the filename path
+	filenameEx = (os.path.splitext(filename))[1] # Get the file extenstion
 
 
 	lockedFile = open(filenameNoEx + ".dblt", "wb")
@@ -56,11 +56,11 @@ def run(filename, drive, verbosity):
 		print("wrote locked file")
 
 	letters = string.ascii_lowercase
-	keyFileName = "".join(random.sample(letters,16))
+	keyFileName = "".join(random.sample(letters,16)) # generate a random name for the key file
 
 	try:
-		os.chdir(drive + ":\\deadbolt\\" )
-	except FileNotFoundError:
+		os.chdir(drive + ":\\deadbolt\\")
+	except FileNotFoundError: # deadbolt dir does not exist
 		os.mkdir(drive + ":\\deadbolt\\")
 		os.chdir(drive + ":\\deadbolt\\" )
 
@@ -81,7 +81,7 @@ def run(filename, drive, verbosity):
 	data = pickle.load(manifestFile)
 	manifestFile.close()
 
-	data[filenameNoEx] = [keyFileName, filenameEx]
+	data[filenameNoEx] = [keyFileName, filenameEx] # add new entry to manifest.txt
 
 	manifestFile = open("manifest.txt", "wb")
 	pickle.dump(data, manifestFile)

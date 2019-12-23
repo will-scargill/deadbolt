@@ -4,7 +4,7 @@ import string
 import pickle
 
 def run(filename, drive, verbosity):
-	cwd = os.getcwd()
+	cwd = os.getcwd() # store this for later while we read the manifest file
 	try:
 		os.chdir(drive + ":\\deadbolt\\" )
 	except FileNotFoundError:
@@ -20,7 +20,7 @@ def run(filename, drive, verbosity):
 	if verbosity == 1:
 		print("read manifest")
 
-	filenameNoEx = (os.path.splitext(filename))[0]
+	filenameNoEx = (os.path.splitext(filename))[0] # Get the filename path
 
 	keyFileName = data[filenameNoEx][0]
 
@@ -34,7 +34,7 @@ def run(filename, drive, verbosity):
 	if verbosity == 1:
 		print("read key file")
 
-	os.chdir(cwd)
+	os.chdir(cwd) # go back to original directory
 
 	lockedBytes = []
 	try:
@@ -50,7 +50,7 @@ def run(filename, drive, verbosity):
 
 	unlockedBytes = []
 	for key in bytesKey:
-		unlockedBytes.append(lockedBytes[bytesKey[key]])
+		unlockedBytes.append(lockedBytes[bytesKey[key]]) # by iterating through bytesKey in order, the order of the original data is preserved. 
 
 	if verbosity == 1:
 		print("decoded locked file")
