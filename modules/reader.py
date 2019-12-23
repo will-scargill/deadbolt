@@ -3,7 +3,10 @@ import os
 import string
 import pickle
 
-def run(filename, drive, verbosity):
+def run(filename, drive, output, verbosity):
+
+	print(output)
+
 	cwd = os.getcwd() # store this for later while we read the manifest file
 	try:
 		os.chdir(drive + ":\\deadbolt\\" )

@@ -14,6 +14,8 @@ operationType.add_argument("-u", "--unlock", help="unlock the file", action="sto
 operationType.add_argument("-r", "--read", help="read the file", action="store_true")
 volumeType.add_argument("-q", "--quiet", help="decrease output verbosity", action="count", default=0)
 volumeType.add_argument("-v", "--verbose", help="increase output verbosity", action="count", default=0)
+parser.add_argument("-R", "--remove", help="remove original file", action="store_true")
+parser.add_argument("-o", "--output", type=str, help="remove original file", default="")
 parser.add_argument("file", help="file to be locked/unlocked")
 parser.add_argument("drive", help="drive number to read/save the key file to/from")
 
@@ -21,13 +23,13 @@ parser.add_argument("drive", help="drive number to read/save the key file to/fro
 args = parser.parse_args()
 
 if args.lock:
-    response = locker.run(args.file, args.drive, args.verbose)
+    response = locker.run(args.file, args.drive, args.output, args.verbose)
     if response == "FileNotFoundError - missingfile" and args.quiet < 1:
         print("deadbolt.py: error: specified file " + args.file + " could not be found")
     elif response == "OK" and args.quiet < 2:
         print("file locked")
 elif args.unlock:
-    response = unlocker.run(args.file, args.drive, args.verbose)
+    response = unlocker.run(args.file, args.drive, args.output, args.verbose)
     if response == "FileNotFoundError - missingfile" and args.quiet < 1:
         print("deadbolt.py: error: specified file " + args.file + " could not be found")
     elif response == "FileNotFoundError - nodirectory" and args.quiet < 1:
@@ -39,7 +41,7 @@ elif args.unlock:
     elif response == "OK" and args.quiet < 2:
         print("file unlocked")
 elif args.read:
-    response = reader.run(args.file, args.drive, args.verbose)
+    response = reader.run(args.file, args.drive, args.output, args.verbose)
     if response == "FileNotFoundError - missingfile" and args.quiet < 1:
         print("deadbolt.py: error: specified file " + args.file + " could not be found")
     elif response == "FileNotFoundError - nodirectory" and args.quiet < 1:
@@ -52,5 +54,4 @@ elif args.read:
         print("\nfile output displayed above")
 else:
     print("deadbolt.py: error: no mode of operation was specified [-l | -u | -r]")
-
 

@@ -3,8 +3,24 @@ import os
 import string
 import pickle
 
-def run(filename, drive, verbosity):
+def run(filename, drive, output, verbosity):
 	cwd = os.getcwd() # store this for later while we read the manifest file
+
+	try:
+		lockedFile = open(filename, "rb")
+	except FileNotFoundError:
+		return "FileNotFoundError - missingfile"
+	data = pickle.load(lockedFile)
+	lockedFile.close()
+
+	bytesRead = data[1]
+	fileIndentifier = data[0]
+
+	lockedBytes = []
+
+	for b in bytesRead:
+		lockedBytes.append(b)
+
 	try:
 		os.chdir(drive + ":\\deadbolt\\" )
 	except FileNotFoundError:
@@ -15,7 +31,7 @@ def run(filename, drive, verbosity):
 	except FileNotFoundError:
 		return "FileNotFoundError - nomanifest"
 
-	data = pickle.load(manifestFile)
+	manifestData = pickle.load(manifestFile)
 	manifestFile.close()
 
 	if verbosity == 1:
@@ -23,7 +39,7 @@ def run(filename, drive, verbosity):
 
 	filenameNoEx = (os.path.splitext(filename))[0] # Get the filename path
 
-	keyFileName = data[filenameNoEx][0]
+	keyFileName = manifestData[fileIndentifier][2]
 	try:
 		keyFile = open(keyFileName+".dkey", "rb")
 	except FileNotFoundError:
@@ -36,7 +52,7 @@ def run(filename, drive, verbosity):
 
 	os.chdir(cwd) # go back to original directory
 
-	lockedBytes = []
+	"""
 	try:
 		with open(filename, "rb") as f:
 			    bytesRead = f.read()
@@ -44,6 +60,8 @@ def run(filename, drive, verbosity):
 			    	lockedBytes.append(b)
 	except FileNotFoundError:
 		return "FileNotFoundError - missingfile"
+	"""
+
 
 	if verbosity == 1:
 		print("read locked bytes")
@@ -56,7 +74,7 @@ def run(filename, drive, verbosity):
 		print("decoded locked file")
 
 	unlockedBytesToWrite = bytes(unlockedBytes)
-	newFile = open(filenameNoEx + "_deadbolt" + data[filenameNoEx][1], "wb")
+	newFile = open(manifestData[fileIndentifier][0] + "_deadbolt" + manifestData[fileIndentifier][1], "wb")
 	newFile.write(unlockedBytesToWrite)
 	newFile.close()
 

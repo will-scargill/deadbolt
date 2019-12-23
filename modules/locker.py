@@ -3,7 +3,8 @@ import os
 import string
 import pickle
 
-def run(filename, drive, verbosity):
+def run(filename, drive, output, verbosity):
+	letters = string.ascii_lowercase
 	fileBytes = []
 	try:
 		with open(filename, "rb") as f:
@@ -47,15 +48,19 @@ def run(filename, drive, verbosity):
 	filenameNoEx = (os.path.splitext(filename))[0] # Get the filename path
 	filenameEx = (os.path.splitext(filename))[1] # Get the file extenstion
 
+	lockedFileData = []
+	lockedFileIndentifier = "".join(random.sample(letters,16))
+	lockedFileData.append(lockedFileIndentifier)
+	lockedFileData.append(bytes(lockedBytes))
 
 	lockedFile = open(filenameNoEx + ".dblt", "wb")
-	lockedFile.write(bytes(lockedBytes))
+	pickle.dump(lockedFileData, lockedFile)
 	lockedFile.close()
 
 	if verbosity == 1:
 		print("wrote locked file")
 
-	letters = string.ascii_lowercase
+	
 	keyFileName = "".join(random.sample(letters,16)) # generate a random name for the key file
 
 	try:
@@ -81,7 +86,7 @@ def run(filename, drive, verbosity):
 	data = pickle.load(manifestFile)
 	manifestFile.close()
 
-	data[filenameNoEx] = [keyFileName, filenameEx] # add new entry to manifest.txt
+	data[lockedFileIndentifier] = [filenameNoEx, filenameEx, keyFileName] # add new entry to manifest.txt
 
 	manifestFile = open("manifest.txt", "wb")
 	pickle.dump(data, manifestFile)
