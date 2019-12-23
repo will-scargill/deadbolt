@@ -42,3 +42,4 @@ This will create the file `testfile_deadbolt.txt` which will have the same conte
 - Allow changing of filename
 - Add `-o` flag to specify file output path
 - Add `-r` flag to automate removal of original file
+- Secure RNG?
