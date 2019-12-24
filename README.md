@@ -25,6 +25,10 @@ drive - drive to read/write the key file from/to
 
 -q (--quiet) - decreases output verbosity
 
+-o (--output) - specifies output file name
+
+-R (--remove) - removes original file
+
 ## example
 
 `testfile.txt` contains `Hello world`
@@ -39,7 +43,4 @@ This will create the file `testfile_deadbolt.txt` which will have the same conte
 
 ## todo
 
-- Allow changing of filename
-- Add `-o` flag to specify file output path
-- Add `-r` flag to automate removal of original file
 - Secure RNG?

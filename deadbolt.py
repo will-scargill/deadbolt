@@ -1,4 +1,5 @@
 import argparse
+import os
 
 from modules import locker
 from modules import unlocker
@@ -15,10 +16,11 @@ operationType.add_argument("-r", "--read", help="read the file", action="store_t
 volumeType.add_argument("-q", "--quiet", help="decrease output verbosity", action="count", default=0)
 volumeType.add_argument("-v", "--verbose", help="increase output verbosity", action="count", default=0)
 parser.add_argument("-R", "--remove", help="remove original file", action="store_true")
-parser.add_argument("-o", "--output", type=str, help="remove original file", default="")
+parser.add_argument("-o", "--output", type=str, help="specify outputted file name", default="")
 parser.add_argument("file", help="file to be locked/unlocked")
 parser.add_argument("drive", help="drive number to read/save the key file to/from")
 
+cwd = os.getcwd()
 
 args = parser.parse_args()
 
@@ -55,3 +57,6 @@ elif args.read:
 else:
     print("deadbolt.py: error: no mode of operation was specified [-l | -u | -r]")
 
+if args.remove:
+    os.chdir(cwd)
+    os.remove(args.file)

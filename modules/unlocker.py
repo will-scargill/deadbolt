@@ -73,8 +73,13 @@ def run(filename, drive, output, verbosity):
 	if verbosity == 1:
 		print("decoded locked file")
 
+	if output == "":
+		unlockedFileName = manifestData[fileIndentifier][0] + "_deadbolt"
+	else:
+		unlockedFileName = output
+
 	unlockedBytesToWrite = bytes(unlockedBytes)
-	newFile = open(manifestData[fileIndentifier][0] + "_deadbolt" + manifestData[fileIndentifier][1], "wb")
+	newFile = open(unlockedFileName + manifestData[fileIndentifier][1], "wb")
 	newFile.write(unlockedBytesToWrite)
 	newFile.close()
 

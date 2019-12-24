@@ -53,7 +53,12 @@ def run(filename, drive, output, verbosity):
 	lockedFileData.append(lockedFileIndentifier)
 	lockedFileData.append(bytes(lockedBytes))
 
-	lockedFile = open(filenameNoEx + ".dblt", "wb")
+	if output == "":
+		lockedFileName = filenameNoEx
+	else:
+		lockedFileName = output
+
+	lockedFile = open(lockedFileName + ".dblt", "wb")
 	pickle.dump(lockedFileData, lockedFile)
 	lockedFile.close()
 
