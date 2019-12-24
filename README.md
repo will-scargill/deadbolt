@@ -4,7 +4,7 @@ A command-line tool for securing your files via external media. By keeping the e
 
 ## usage
 
-deadbolt.py [-h] [-l | -u | -r] [-q | -v] file drive
+python deadbolt.py [-h] [-l | -u | -r] [-q | -v] file drive
 
 ### positional parameters
 
@@ -29,11 +29,11 @@ drive - drive to read/write the key file from/to
 
 `testfile.txt` contains `Hello world`
 
-The command `deadbolt.py -l testfile.txt e` is run to lock the file
+The command `python deadbolt.py -l testfile.txt e` is run to lock the file
 
 A file `testfile.dblt` is created in the current directory, and the key file will be generated in the deadbolt directory in the base of the specified drive, in this case `E:\deadbolt`
 
-To unlock the file, the command `deadboly.py -u testfile.dblt e` is run
+To unlock the file, the command `python deadboly.py -u testfile.dblt e` is run
 
 This will create the file `testfile_deadbolt.txt` which will have the same content as the original file
 
