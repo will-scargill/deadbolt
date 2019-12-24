@@ -6,8 +6,10 @@ from modules import unlocker
 from modules import reader
 
 parser = argparse.ArgumentParser(description="secure your files")
-operationType = parser.add_mutually_exclusive_group() # user shouldnt be able to run multiple different operations at once
-volumeType = parser.add_mutually_exclusive_group() # cant be quiet and verbose at the same time
+# user shouldnt be able to run multiple different operations at once
+operationType = parser.add_mutually_exclusive_group()
+# cant be quiet and verbose at the same time
+volumeType = parser.add_mutually_exclusive_group()
 
 
 operationType.add_argument("-l", "--lock", help="lock the file", action="store_true")
