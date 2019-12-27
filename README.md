@@ -6,30 +6,27 @@ A command-line tool for securing your files via external media. By keeping the e
 
 ## usage
 
+```
 python deadbolt.py [-h] [-l | -u | -r] [-q | -v] file drive
+```
 
 ### positional parameters
 
-file - path of the file to be locked/unlocked
-drive - drive to read/write the key file from/to
+- `file` - path of the file to be locked/unlocked
+- `drive` - drive to read/write the key file from/to
 
 ### mode of operation (required)
 
--l (--lock) - lock the specified file
-
--u (--unlock) - unlock the specified file
-
--r (--read) - read the contents of the specified file
+- `-l` (`--lock`) - lock the specified file
+- `-u` (`--unlock`) - unlock the specified file
+- `-r` (`--read`) - read the contents of the specified file
 
 ### optional parameters
 
--v (--verbose) - increases output verbosity
-
--q (--quiet) - decreases output verbosity
-
--o (--output) - specifies output file name
-
--R (--remove) - removes original file
+- `-v` (`--verbose`) - increases output verbosity
+- `-q` (`--quiet`) - decreases output verbosity
+- `-o` (`--output`) - specifies output file name
+- `-R` (`--remove`) - removes original file
 
 ## example
 
