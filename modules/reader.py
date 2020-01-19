@@ -1,51 +1,52 @@
 import os
-import pickle
+import json
 
 
 def run(filename, drive, output, verbosity):
-
-    print(output)
-
     cwd = os.getcwd()  # store this for later while we read the manifest file
+    try:
+        lockedFile = open(filename, "r")
+    except FileNotFoundError:
+        return "FileNotFoundError - missingfile"
+    data = json.load(lockedFile)
+    lockedFile.close()
+
+    bytesRead = data[1]
+    fileIndentifier = data[0]
+
+    lockedBytes = []
+
+    for b in bytesRead:
+        lockedBytes.append(b)
+
     try:
         os.chdir(drive + ":\\deadbolt\\")
     except FileNotFoundError:
         return "FileNotFoundError - nodirectory"
 
     try:
-        manifestFile = open("manifest.txt", "rb")
+        manifestFile = open("manifest.json", "rb")
     except FileNotFoundError:
         return "FileNotFoundError - nomanifest"
-    data = pickle.load(manifestFile)
+
+    manifestData = json.load(manifestFile)
     manifestFile.close()
 
     if verbosity == 1:
         print("read manifest")
 
-    filenameNoEx = (os.path.splitext(filename))[0]  # Get the filename path
-
-    keyFileName = data[filenameNoEx][0]
-
+    keyFileName = manifestData[fileIndentifier][2]
     try:
-        keyFile = open(keyFileName + ".dkey", "rb")
+        keyFile = open(keyFileName + ".dkey", "r")
     except FileNotFoundError:
         return "FileNotFoundError - nokeyfile"
-    bytesKey = pickle.load(keyFile)
+    bytesKey = json.load(keyFile)
     keyFile.close()
 
     if verbosity == 1:
         print("read key file")
 
     os.chdir(cwd)  # go back to original directory
-
-    lockedBytes = []
-    try:
-        with open(filename, "rb") as f:
-            bytesRead = f.read()
-            for b in bytesRead:
-                lockedBytes.append(b)
-    except FileNotFoundError:
-        return "FileNotFoundError - missingfile"
 
     if verbosity == 1:
         print("read locked bytes")
