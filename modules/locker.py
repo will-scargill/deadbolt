@@ -1,8 +1,9 @@
 import random
 import os
+import ntpath
 import string
 import pickle
-
+import json
 
 def run(filename, drive, output, verbosity):
     letters = string.ascii_lowercase
@@ -47,21 +48,21 @@ def run(filename, drive, output, verbosity):
     if verbosity == 1:
         print("added random data")
 
-    filenameNoEx = (os.path.splitext(filename))[0]  # Get the filename path
-    filenameEx = (os.path.splitext(filename))[1]  # Get the file extenstion
+    filenameNoEx = ntpath.splitext(ntpath.basename(filename))[0]  # Get the filename path
+    filenameEx = (ntpath.splitext(filename))[1]  # Get the file extenstion
 
     lockedFileData = []
     lockedFileIndentifier = "".join(random.sample(letters, 16))
     lockedFileData.append(lockedFileIndentifier)
-    lockedFileData.append(bytes(lockedBytes))
+    lockedFileData.append(lockedBytes)
 
-    if output == "":
+    if output == "": # If the user hasn't specified a custom file output name
         lockedFileName = filenameNoEx
     else:
         lockedFileName = output
 
-    lockedFile = open(lockedFileName + ".dblt", "wb")
-    pickle.dump(lockedFileData, lockedFile)
+    lockedFile = open(lockedFileName + ".dblt", "w")
+    json.dump(lockedFileData, lockedFile) 
     lockedFile.close()
 
     if verbosity == 1:
@@ -75,27 +76,30 @@ def run(filename, drive, output, verbosity):
         os.mkdir(drive + ":\\deadbolt\\")
         os.chdir(drive + ":\\deadbolt\\")
 
-    keyFile = open(keyFileName + ".dkey", "wb")
-    pickle.dump(bytesKey, keyFile)
+    keyFile = open(keyFileName + ".dkey", "w")
+    #pickle.dump(bytesKey, keyFile)
+    json.dump(bytesKey, keyFile)
     keyFile.close()
 
     if verbosity == 1:
         print("wrote key file")
 
     try:
-        manifestFile = open("manifest.txt", "rb")
+        manifestFile = open("manifest.json", "r")
     except FileNotFoundError:
-        manifestFile = open("manifest.txt", "wb")
-        pickle.dump({}, manifestFile)
+        manifestFile = open("manifest.json", "w")
+        #pickle.dump({}, manifestFile)
+        json.dump({}, manifestFile) # create empty dictionary
         manifestFile.close()
-        manifestFile = open("manifest.txt", "rb")
-    data = pickle.load(manifestFile)
+        manifestFile = open("manifest.json", "r")
+    data = json.load(manifestFile) 
     manifestFile.close()
 
     data[lockedFileIndentifier] = [filenameNoEx, filenameEx, keyFileName]  # add new entry to manifest.txt
 
-    manifestFile = open("manifest.txt", "wb")
-    pickle.dump(data, manifestFile)
+    manifestFile = open("manifest.json", "w")
+    #pickle.dump(data, manifestFile)
+    json.dump(data, manifestFile)
     manifestFile.close()
 
     if verbosity == 1:

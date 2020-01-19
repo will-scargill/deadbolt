@@ -1,66 +1,69 @@
 import os
+import ntpath
 import pickle
+import json
 
 
 def run(filename, drive, output, verbosity):
+	cwd = os.getcwd()  # store this for later while we read the manifest file
+	try:
+		lockedFile = open(filename, "r")
+	except FileNotFoundError:
+		return "FileNotFoundError - missingfile"
+	data = json.load(lockedFile) 
+	lockedFile.close()
 
-    print(output)
+	bytesRead = data[1]
+	fileIndentifier = data[0]
 
-    cwd = os.getcwd()  # store this for later while we read the manifest file
-    try:
-        os.chdir(drive + ":\\deadbolt\\")
-    except FileNotFoundError:
-        return "FileNotFoundError - nodirectory"
+	lockedBytes = []
 
-    try:
-        manifestFile = open("manifest.txt", "rb")
-    except FileNotFoundError:
-        return "FileNotFoundError - nomanifest"
-    data = pickle.load(manifestFile)
-    manifestFile.close()
+	for b in bytesRead:
+		lockedBytes.append(b)
 
-    if verbosity == 1:
-        print("read manifest")
+	try:
+		os.chdir(drive + ":\\deadbolt\\")
+	except FileNotFoundError:
+		return "FileNotFoundError - nodirectory"
 
-    filenameNoEx = (os.path.splitext(filename))[0]  # Get the filename path
+	try:
+		manifestFile = open("manifest.json", "rb")
+	except FileNotFoundError:
+		return "FileNotFoundError - nomanifest"
 
-    keyFileName = data[filenameNoEx][0]
+	manifestData = json.load(manifestFile)
+	manifestFile.close()
 
-    try:
-        keyFile = open(keyFileName + ".dkey", "rb")
-    except FileNotFoundError:
-        return "FileNotFoundError - nokeyfile"
-    bytesKey = pickle.load(keyFile)
-    keyFile.close()
+	if verbosity == 1:
+		print("read manifest")
 
-    if verbosity == 1:
-        print("read key file")
+	keyFileName = manifestData[fileIndentifier][2]
+	try:
+		keyFile = open(keyFileName + ".dkey", "r")
+	except FileNotFoundError:
+		return "FileNotFoundError - nokeyfile"
+	bytesKey = json.load(keyFile)
+	keyFile.close()
 
-    os.chdir(cwd)  # go back to original directory
+	if verbosity == 1:
+		print("read key file")
 
-    lockedBytes = []
-    try:
-        with open(filename, "rb") as f:
-            bytesRead = f.read()
-            for b in bytesRead:
-                lockedBytes.append(b)
-    except FileNotFoundError:
-        return "FileNotFoundError - missingfile"
+	os.chdir(cwd)  # go back to original directory
 
-    if verbosity == 1:
-        print("read locked bytes")
+	if verbosity == 1:
+		print("read locked bytes")
 
-    unlockedBytes = []
-    for key in bytesKey:
-        unlockedBytes.append(lockedBytes[bytesKey[key]])  # by iterating through bytesKey in order, the order of the original data is preserved.
+	unlockedBytes = []
+	for key in bytesKey:
+		unlockedBytes.append(lockedBytes[bytesKey[key]])  # by iterating through bytesKey in order, the order of the original data is preserved.
 
-    if verbosity == 1:
-        print("decoded locked file")
+	if verbosity == 1:
+		print("decoded locked file")
 
-    unlockedBytesToWrite = bytes(unlockedBytes)
-    try:
-        print(unlockedBytesToWrite.decode("utf-8"))
-    except UnicodeDecodeError:
-        print(unlockedBytesToWrite)
+	unlockedBytesToWrite = bytes(unlockedBytes)
+	try:
+		print(unlockedBytesToWrite.decode("utf-8"))
+	except UnicodeDecodeError:
+		print(unlockedBytesToWrite)
 
-    return "OK"
+	return "OK"

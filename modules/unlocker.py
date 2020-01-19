@@ -1,4 +1,5 @@
 import os
+import json
 import pickle
 
 
@@ -6,10 +7,10 @@ def run(filename, drive, output, verbosity):
     cwd = os.getcwd()  # store this for later while we read the manifest file
 
     try:
-        lockedFile = open(filename, "rb")
+        lockedFile = open(filename, "r")
     except FileNotFoundError:
         return "FileNotFoundError - missingfile"
-    data = pickle.load(lockedFile)
+    data = json.load(lockedFile) 
     lockedFile.close()
 
     bytesRead = data[1]
@@ -26,11 +27,11 @@ def run(filename, drive, output, verbosity):
         return "FileNotFoundError - nodirectory"
 
     try:
-        manifestFile = open("manifest.txt", "rb")
+        manifestFile = open("manifest.json", "rb")
     except FileNotFoundError:
         return "FileNotFoundError - nomanifest"
 
-    manifestData = pickle.load(manifestFile)
+    manifestData = json.load(manifestFile)
     manifestFile.close()
 
     if verbosity == 1:
@@ -38,10 +39,10 @@ def run(filename, drive, output, verbosity):
 
     keyFileName = manifestData[fileIndentifier][2]
     try:
-        keyFile = open(keyFileName + ".dkey", "rb")
+        keyFile = open(keyFileName + ".dkey", "r")
     except FileNotFoundError:
         return "FileNotFoundError - nokeyfile"
-    bytesKey = pickle.load(keyFile)
+    bytesKey = json.load(keyFile)
     keyFile.close()
 
     if verbosity == 1:
