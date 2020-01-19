@@ -1,5 +1,7 @@
 # deadbolt
 
+[![Build Status](https://travis-ci.com/will-scargill/deadbolt.svg?branch=master)](https://travis-ci.com/will-scargill/deadbolt)
+
 A command-line tool for securing your files via external media. By keeping the encrypted file seperated from the key file, it can only be decrypted when the external media is plugged into the computer.
 
 ## usage
