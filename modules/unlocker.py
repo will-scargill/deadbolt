@@ -1,6 +1,5 @@
 import os
 import json
-import pickle
 
 
 def run(filename, drive, output, verbosity):
@@ -10,7 +9,7 @@ def run(filename, drive, output, verbosity):
         lockedFile = open(filename, "r")
     except FileNotFoundError:
         return "FileNotFoundError - missingfile"
-    data = json.load(lockedFile) 
+    data = json.load(lockedFile)
     lockedFile.close()
 
     bytesRead = data[1]

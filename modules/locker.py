@@ -2,8 +2,8 @@ import random
 import os
 import ntpath
 import string
-import pickle
 import json
+
 
 def run(filename, drive, output, verbosity):
     letters = string.ascii_lowercase
@@ -11,8 +11,7 @@ def run(filename, drive, output, verbosity):
     try:
         with open(filename, "rb") as f:
             bytesRead = f.read()
-            # iterate through the individual bytes and put them in a list
-            for b in bytesRead:
+            for b in bytesRead:  # iterate through the individual bytes and put them in a list
                 fileBytes.append(b)
     except FileNotFoundError:
         return "FileNotFoundError - missingfile"
@@ -56,13 +55,13 @@ def run(filename, drive, output, verbosity):
     lockedFileData.append(lockedFileIndentifier)
     lockedFileData.append(lockedBytes)
 
-    if output == "": # If the user hasn't specified a custom file output name
+    if output == "":  # If the user hasn't specified a custom file output name
         lockedFileName = filenameNoEx
     else:
         lockedFileName = output
 
     lockedFile = open(lockedFileName + ".dblt", "w")
-    json.dump(lockedFileData, lockedFile) 
+    json.dump(lockedFileData, lockedFile)
     lockedFile.close()
 
     if verbosity == 1:
@@ -77,7 +76,6 @@ def run(filename, drive, output, verbosity):
         os.chdir(drive + ":\\deadbolt\\")
 
     keyFile = open(keyFileName + ".dkey", "w")
-    #pickle.dump(bytesKey, keyFile)
     json.dump(bytesKey, keyFile)
     keyFile.close()
 
@@ -88,17 +86,15 @@ def run(filename, drive, output, verbosity):
         manifestFile = open("manifest.json", "r")
     except FileNotFoundError:
         manifestFile = open("manifest.json", "w")
-        #pickle.dump({}, manifestFile)
-        json.dump({}, manifestFile) # create empty dictionary
+        json.dump({}, manifestFile)  # create empty dictionary
         manifestFile.close()
         manifestFile = open("manifest.json", "r")
-    data = json.load(manifestFile) 
+    data = json.load(manifestFile)
     manifestFile.close()
 
     data[lockedFileIndentifier] = [filenameNoEx, filenameEx, keyFileName]  # add new entry to manifest.txt
 
     manifestFile = open("manifest.json", "w")
-    #pickle.dump(data, manifestFile)
     json.dump(data, manifestFile)
     manifestFile.close()
 
